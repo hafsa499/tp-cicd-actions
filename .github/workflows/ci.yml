@@ -5,9 +5,16 @@ on:
   pull_request:
     branches: [ main ]
   workflow_call: # Permet l'appel par d'autres workflows
+  schedule:
+    - cron: '0 2 * * *' # Tous les jours à 02h00 UTC
 jobs:
     lint-and-test:
      runs-on: ubuntu-latest
+     timeout-minutes: 10
+
+     concurrency:
+      group: ci-${{ github.ref }}
+      cancel-in-progress: true
      strategy:
        matrix:
          node-version: [18, 20, 22]
